@@ -54,4 +54,12 @@ def display_Names(dic_last_names):
         print(names[i])
 
 
+def cleaned_sorted(directory, extension):
+    list_sorted=list_of_files
+    #for i in range (len(list_of_files)):
+        #str(fichier()) = f"fichier_{i}.txt"
 
+    for i in list_sorted:
+        for char in list_sorted(i):
+            if ord(char)>=65 or ord(char)<=90:
+                char=chr(ord(char)-32)
