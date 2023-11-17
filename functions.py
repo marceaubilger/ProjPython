@@ -53,13 +53,22 @@ def display_Names(dic_last_names):
     for i in range(len(dic_last_names)):
         print(names[i])
 
-
-def cleaned_sorted(directory, extension):
-    list_sorted=list_of_files
-    #for i in range (len(list_of_files)):
-        #str(fichier()) = f"fichier_{i}.txt"
+#fonction pour remplacer les caracteres et les mettres dans les fichiers clean, probleme il ne trouve pas les fichiers .txt de base alors quils sont bien là
+'''
+def cleaned_sorted(directory,liste_names_cleaned):
+    j=0
+    list_sorted=list_of_files(directory,extension=".txt")
 
     for i in list_sorted:
-        for char in list_sorted(i):
+        #list_sorted[j]=list_sorted[j].replace(".txt","")
+        liste_names_cleaned[j]=open(liste_names_cleaned[j],"w")
+        with open(list_sorted[j],"r") as file:
+            content=file.read
+        for char in content:
+            print(char)
             if ord(char)>=65 or ord(char)<=90:
                 char=chr(ord(char)-32)
+                liste_names_cleaned[j].write(char)
+        j+=1
+
+'''
