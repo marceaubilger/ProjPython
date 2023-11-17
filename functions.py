@@ -53,22 +53,36 @@ def display_Names(dic_last_names):
     for i in range(len(dic_last_names)):
         print(names[i])
 
-#fonction pour remplacer les caracteres et les mettres dans les fichiers clean, probleme il ne trouve pas les fichiers .txt de base alors quils sont bien là
-'''
-def cleaned_sorted(directory,liste_names_cleaned):
+# copie le contenu des files de base dans ceux des fichiers pour pouvoir les clean
+def copy_file(directory,list_names_cleaned):
+    liste_sorted=list_of_files(directory,".txt")
     j=0
-    list_sorted=list_of_files(directory,extension=".txt")
-
-    for i in list_sorted:
-        #list_sorted[j]=list_sorted[j].replace(".txt","")
-        liste_names_cleaned[j]=open(liste_names_cleaned[j],"w")
-        with open(list_sorted[j],"r") as file:
-            content=file.read
-        for char in content:
-            print(char)
-            if ord(char)>=65 or ord(char)<=90:
-                char=chr(ord(char)-32)
-                liste_names_cleaned[j].write(char)
+    for i in liste_sorted:
+        file_path=os.path.join(directory,liste_sorted[j])
+        with open (file_path,"r") as file:
+            content=file.read()
+            #copie le texte
+        with open (list_names_cleaned[j],"w") as out_file:
+            out_file.write(content)
+            #colle le texte
         j+=1
 
-'''
+#fonction pour remplacer les majuscules et la ponctuation
+def clean_files(list_names_cleaned):
+    for i in list_names_cleaned:
+        with open (i,"r") as file:
+            content=file.read()
+            #copie le texte
+        modified_content = ""
+        for char in content:
+            if ord(char)<=90 and ord(char)>=65:
+                char=chr(ord(char)+32)
+                #change le texte en enlevant les majuscules
+            if ord(char)<=47 and ord(char)>=33:
+                char=chr(32)
+                #enleve les signes de ponctuations
+            modified_content+=char
+        with open (i,"w") as file:
+            file.write(modified_content)
+            #remplace le texte originel par le nouveau texte sans majuscule
+

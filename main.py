@@ -3,7 +3,8 @@ from functions import list_of_files
 from functions import get_LastNames
 from functions import add_FirstName
 from functions import display_Names
-from functions import cleaned_sorted
+from functions import copy_file
+from functions import clean_files
 
 directory = "C:\ProjPython\speeches"
 
@@ -22,4 +23,6 @@ dic_last_names=add_FirstName(liste_lastNames)
 
 display_Names(dic_last_names)
 
-cleaned_sorted(directory,liste_names_cleaned)
+copy_file(directory,liste_names_cleaned)
+
+clean_files(liste_names_cleaned)
