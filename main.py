@@ -1,10 +1,16 @@
-
+import os
 from functions import list_of_files
 from functions import get_LastNames
 from functions import add_FirstName
 from functions import display_Names
 
 directory = "C:\ProjPython\speeches"
+
+try:
+    os.mkdir("cleaned")
+except:
+    print("")
+
 
 files_names = list_of_files(directory, "txt")
 
