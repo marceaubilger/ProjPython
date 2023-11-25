@@ -67,6 +67,7 @@ def copy_file(directory,list_names_cleaned):
             #colle le texte
         j+=1
 
+
 #fonction pour remplacer les majuscules et la ponctuation
 def clean_files(list_names_cleaned):
     for i in list_names_cleaned:
@@ -85,4 +86,47 @@ def clean_files(list_names_cleaned):
         with open (i,"w") as file:
             file.write(modified_content)
             #remplace le texte originel par le nouveau texte sans majuscule
+
+
+
+def Calculate_TF(word):
+    word_input=word.split()
+    word_count={}
+    for word in word_input:
+        word_count[word]=word_count.get(word,0)+1
+    return word_count
+
+def Calculate_IDF(liste_names_cleaned):
+    word_count_file={}
+    for i in liste_names_cleaned:
+        with open (i,"r",encoding="utf8") as file:
+            content=file.read()
+        word_count=Calculate_TF(content)
+        for word,count in word_count.items():
+            word_count_file[word] = word_count_file.get(word, 0) + count
+    return word_count_file
+
+
+def get_most_mentioned_words(word_count_dict):
+    most_mentioned_word = max(word_count_dict, key=word_count_dict.get)
+    max_count = word_count_dict[most_mentioned_word]
+    most_mentioned_words = [word for word, count in word_count_dict.items() if count == max_count]
+    return most_mentioned_words, max_count
+
+
+
+def menu(dic_last_names,liste_names_cleaned):
+    print("What would you like to do:\n"
+          "     1) Display list of names\n"
+          "     2) Display the most repeated words by Chirac\n"
+          "     3) Display the names of the presidents who spoke of the nation")
+    choice=int(input())
+    if choice==1:
+        display_Names(dic_last_names)
+        menu(dic_last_names)
+    elif choice==2:
+        a=Calculate_IDF(liste_names_cleaned[:2])
+        b,c=get_most_mentioned_words(a)
+        print("The most repeated word by Chirac is :",b[0],", it is said",c,"times")
+        menu(dic_last_names,liste_names_cleaned)
 
