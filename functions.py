@@ -192,7 +192,7 @@ def spoke_of_(word,all_doc):
 
 
 def menu(dic_last_names,liste_names_cleaned):
-    max=8
+    maxi=8
     user_input=input("What would you like to do:\n"
           "     1) Display list of names\n"
           "     2) Display the list of unimportant word\n"
@@ -209,7 +209,7 @@ def menu(dic_last_names,liste_names_cleaned):
         print("Invalid input.")
         print("\n")
         menu(dic_last_names,liste_names_cleaned)
-    if choice>max:
+    if choice>maxi:
         print("Invalid input.")
         print("\n")
         menu(dic_last_names,liste_names_cleaned)
