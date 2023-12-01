@@ -8,14 +8,12 @@ try:
 except:
     print("")
 
-
 files_names = list_of_files(directory, "txt")
 
 liste_lastNames=get_LastNames(files_names)
 
 dic_last_names=add_FirstName(liste_lastNames)
 
-#display_Names(dic_last_names)
 
 copy_file(directory,liste_names_cleaned)
 
