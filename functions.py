@@ -191,6 +191,15 @@ def spoke_of_(word,all_doc):
     return dico_nation
 
 
+def who_spoke_first(dico_of_names):
+    first="none"
+    list_of_names=["Giscard dEstaing","Mitterand","Chirac","Sarkozy","Hollande","Macron"]
+    for i in list_of_names:
+        if dico_of_names[i]!=0:
+            first=i
+            break
+    return first
+
 def menu(dic_last_names,liste_names_cleaned):
     maxi=8
     user_input=input("What would you like to do:\n"
@@ -238,9 +247,8 @@ def menu(dic_last_names,liste_names_cleaned):
         print("\n")
         menu(dic_last_names,liste_names_cleaned)
     elif choice==6:
-        #print(spoke_of_("climat",liste_names_cleaned))'
-        #print(spoke_of_("écologie",liste_names_cleaned))
-        print("The first president who spoke of climate is 'Mitterand'\n")
+        print("The first president to talk about climat is",who_spoke_first(spoke_of_("climat",liste_names_cleaned)),"\n")
+        print("The first president to talk about climat is",who_spoke_first(spoke_of_("écologie",liste_names_cleaned)),"\n")
         menu(dic_last_names,liste_names_cleaned)
     elif choice==7:
         print("If all the presidents mentionned a word then it's IDF score would be 0, which would make it a unimportant word.")
