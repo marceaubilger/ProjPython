@@ -1,6 +1,6 @@
 import os
 from functions import *
-directory = "C:\ProjPython\speeches"
+directory = "speeches"
 
 liste_names_cleaned=["Nominations_Chirac1_cleaned","Nominations_Chirac2_cleaned","Nominations_Giscard dEstaing_cleaned","Nominations_Hollande_cleaned","Nominations_Macron_cleaned","Nominations_Mitterand1_cleaned","Nominations_Mitterand2_cleaned","Nominations_Sarkozy_cleaned"]
 try:
