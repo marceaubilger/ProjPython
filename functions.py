@@ -253,5 +253,10 @@ def menu(dic_last_names, liste_names_cleaned):
 
     # Recall the menu unless the user chooses to exit (option 8)
     if choice != 8:
-        menu(dic_last_names, liste_names_cleaned)
+        user_decision=int(input("Do you want to make a new request ? 1: Yes 2: No "))
+        if user_decision==1:
+            menu(dic_last_names, liste_names_cleaned)
+    else:
+        exit()
+
  
