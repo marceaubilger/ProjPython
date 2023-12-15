@@ -19,12 +19,4 @@ copy_file(directory,liste_names_cleaned)
 
 clean_files(liste_names_cleaned)
 
-#menu(dic_last_names,liste_names_cleaned)
-a=clean_question("Bonjour, je suis un logiciel.")
-
-b=remove_unimportant(a,calculate_unimportant_word(liste_names_cleaned))
-
-calculate_tfidf_question()
-
-
-
+menu(dic_last_names,liste_names_cleaned)

@@ -119,7 +119,7 @@ def calculate_idf(word, all_documents): #Calculate idf
         content=txt.split()
         if word in content:
             count += 1
-    return math.log(len(all_documents) / (count )) if count!=0 else 0
+    return math.log10(len(all_documents) / (count )) if count!=0 else 0
 
 def calculate_tfidf(word,all_doc): #Apply the compute of tf-idf
     a=calculate_tf_all_files(word,all_doc)
@@ -140,17 +140,18 @@ def calculate_unimportant_word(all_doc):#Calculate unimportant words
             list_unimportant.append(i)
     return list_unimportant
 
-def main_dico(all_doc): #Where we stock useful values 
+def main_set(all_doc): #Where we stock useful values 
     content=""
     for i in all_doc:
         with open(i,"r",encoding="utf-8") as file:
             txt=file.read()
         content+=txt
     word=content.split()
-    words=Counter(word)
+    main_set=set(word)
+    #words=Counter(word)
 
-    main_dico = {word: count for word, count in words.items()}
-    return main_dico
+    #main_dico = {word: count for word, count in words.items()}
+    return main_set
 
 def tfidf_of_main_dico(main_dico,all_doc): #Use the main dico for compute a pertinent tf-idf
     main_dico_tfidf={}
@@ -206,6 +207,19 @@ def who_spoke_first(dico_of_names):#take in argument the above function, use its
             first=i
             break
     return first
+
+def get_matrix(liste_names_cleaned,main_set):
+    matrix=[]
+    
+    for i in main_set:
+        l=[]
+        tmp_idf=calculate_idf(i,liste_names_cleaned)
+        for j in liste_names_cleaned:
+            l.append(tmp_idf*calculate_tf_single_file(i,j))
+        matrix.append(l)
+    return matrix
+    
+
 #menu 1 as match thanks to algorithmics
 def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previous functions according to user request 
     user_input = input("What would you like to do:\n"
@@ -234,7 +248,7 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             print("\n")
         case 3:
             print("processing...")
-            a = tfidf_of_main_dico(main_dico(liste_names_cleaned), liste_names_cleaned)
+            a = tfidf_of_main_dico(main_set(liste_names_cleaned), liste_names_cleaned)
             max_score = max(a.values())
             max_score_words = [word for word, score in a.items() if score == max_score]
             print(f"Word(s) with the highest TF-IDF score(s): {max_score_words}")
