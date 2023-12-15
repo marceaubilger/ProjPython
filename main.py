@@ -20,3 +20,4 @@ copy_file(directory,liste_names_cleaned)
 clean_files(liste_names_cleaned)
 
 menu(dic_last_names,liste_names_cleaned)
+

@@ -1,22 +1,22 @@
-import os
+#Import useful libraries for the rest of the programm
+import os 
 import math
-from collections import defaultdict
-from collections import Counter
-directory = "C:\ProjPython"
+from collections import defaultdict #Idk
+from collections import Counter #Equivalent of incrementing a counter
+directory = "C:\ProjPython" #We use the absolute path so the programm can work on any computer 
 
-def list_of_files(directory, extension): 
+def list_of_files(directory, extension): #Return list containing the names of all the files in the directory with the specified extension.
     files_names = [] 
     for filename in os.listdir(directory): 
         if filename.endswith(extension): 
             files_names.append(filename) 
     return files_names
 
-def get_LastNames(files_names):
+def get_LastNames(files_names):  #This function extracts and returns the last names of the presidents from the filenames (as a list).
     names_files=open("names_files.txt","w+")
     for i in range(len(files_names)):
         names_files.write(files_names[i])
         names_files.write("\n")
-
     first_replace="Nomination_"
     sec_replace=".txt"
     liste_lastNames=[]
@@ -29,7 +29,7 @@ def get_LastNames(files_names):
     return liste_lastNames
 
 
-def add_FirstName(liste_lastNames):
+def add_FirstName(liste_lastNames): #add_FirstName at the list_lastNames and return it as a dictionnary with complete president name as values 
     dic_last_names=list(dict.fromkeys(liste_lastNames))
     firstNames=open("firstNames.txt","w")
     for i in range (len(dic_last_names)):
@@ -50,7 +50,7 @@ def add_FirstName(liste_lastNames):
         firstNames.write("\n")
     return dic_last_names
 
-def display_Names(dic_last_names):
+def display_Names(dic_last_names):#Open result of our two last functions and display it
     firstNames=open("firstnames.txt","r")
     names=firstNames.readlines()
     for i in range(len(dic_last_names)):
@@ -90,14 +90,14 @@ def clean_files(list_names_cleaned):
             file.write(modified_content)
             #replaces the original text with the new text without capital letters
 
-def get_most_mentioned_words(word_count_dict):
+def get_most_mentioned_words(word_count_dict): #Compute and give the most mentioned words with how many times it have been pronounced
     most_mentioned_word = max(word_count_dict, key=word_count_dict.get)
     max_count = word_count_dict[most_mentioned_word]
     most_mentioned_words = [word for word, count in word_count_dict.items() if count == max_count]
     return most_mentioned_words, max_count
 
 
-def calculate_tf_single_file(word, document):
+def calculate_tf_single_file(word, document): #calculate the tf of one single file
     with open(document,"r",encoding="utf-8") as file:
         txt=file.read()
     content=txt.split()
@@ -105,13 +105,13 @@ def calculate_tf_single_file(word, document):
     total_words = len(content)
     return word_count / total_words if total_words > 0 else 0
 
-def calculate_tf_all_files(word,all_doc):
+def calculate_tf_all_files(word,all_doc): #make sum of all single tf 
     tf_value=0
     for i in all_doc:
         tf_value+=calculate_tf_single_file(word,i)
     return tf_value
 
-def calculate_idf(word, all_documents):
+def calculate_idf(word, all_documents): #Calculate idf
     count = 0
     for file_name in all_documents:
         with open(file_name, "r", encoding="utf-8") as file:
@@ -121,13 +121,13 @@ def calculate_idf(word, all_documents):
             count += 1
     return math.log(len(all_documents) / (count )) if count!=0 else 0
 
-def calculate_tfidf(word,all_doc):
+def calculate_tfidf(word,all_doc): #Apply the compute of tf-idf
     a=calculate_tf_all_files(word,all_doc)
     val_idf=calculate_idf(word,all_doc)
     tfidf_word=(a*val_idf)
     return tfidf_word
 
-def calculate_unimportant_word(all_doc):
+def calculate_unimportant_word(all_doc):#Calculate unimportant words
     with open(all_doc[0],"r",encoding="utf-8") as file:
         txt=file.read()
     content=txt.split()
@@ -138,7 +138,7 @@ def calculate_unimportant_word(all_doc):
             list_unimportant.append(i)
     return list_unimportant
 
-def main_dico(all_doc):
+def main_dico(all_doc): #Where we stock useful values 
     content=""
     for i in all_doc:
         with open(i,"r",encoding="utf-8") as file:
@@ -150,19 +150,19 @@ def main_dico(all_doc):
     main_dico = {word: count for word, count in words.items()}
     return main_dico
 
-def tfidf_of_main_dico(main_dico,all_doc):
+def tfidf_of_main_dico(main_dico,all_doc): #Use the main dico for compute a pertinent tf-idf
     main_dico_tfidf={}
     for i in main_dico:
         main_dico_tfidf[i]=calculate_tfidf(i,all_doc)
     return main_dico_tfidf
 
-def highest_scores(main_dico_tfidf):
+def highest_scores(main_dico_tfidf): #finding the word(s) which has the highest tf-idf 
     max_score = max(main_dico_tfidf.values())
     max_score_words = [word for word, score in main_dico_tfidf.items() if score == max_score]
 
     return max_score_words
 
-def most_repeated_words_Chirac(doc):
+def most_repeated_words_Chirac(doc): #Finding the most_repeated words by Jacques Chirac
     content=""
     for i in doc[:2]:
         with open(i,"r",encoding="utf-8") as file:
@@ -191,7 +191,7 @@ def spoke_of_(word,all_doc):
     return dico_nation
 
 
-def who_spoke_first(dico_of_names):
+def who_spoke_first(dico_of_names):#take in argument the above function, use its but stop at the first word detection
     first="none"
     list_of_names=["Giscard dEstaing","Mitterand","Chirac","Sarkozy","Hollande","Macron"]
     for i in list_of_names:
@@ -200,7 +200,7 @@ def who_spoke_first(dico_of_names):
             break
     return first
 #menu 1 as match thanks to algorithmics
-def menu(dic_last_names, liste_names_cleaned):
+def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previous functions according to user request 
     user_input = input("What would you like to do:\n"
                        "     1) Display list of names\n"
                        "     2) Display the list of unimportant word\n"
