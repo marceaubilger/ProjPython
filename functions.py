@@ -127,12 +127,7 @@ def calculate_tfidf(word,all_doc): #Apply the compute of tf-idf
     tfidf_word=(a*val_idf)
     return tfidf_word
 
-<<<<<<< Updated upstream
 def calculate_unimportant_word(all_doc):#Calculate unimportant words
-=======
-
-def calculate_unimportant_word(all_doc):
->>>>>>> Stashed changes
     with open(all_doc[0],"r",encoding="utf-8") as file:
         txt=file.read()
     content_liste=txt.split()
@@ -169,11 +164,7 @@ def highest_scores(main_dico_tfidf): #finding the word(s) which has the highest 
 
     return max_score_words
 
-<<<<<<< Updated upstream
-def most_repeated_words_Chirac(doc): #Finding the most_repeated words by Jacques Chirac
-=======
 def most_repeated_words_Chirac(doc,list_unimportant_word):
->>>>>>> Stashed changes
     content=""
     for i in doc[:2]:
         with open(i,"r",encoding="utf-8") as file:
@@ -228,7 +219,6 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
                        "     8) Exit\n"
                        "-> ")
 
-<<<<<<< Updated upstream
     try:
         choice = int(user_input)
     except ValueError:
@@ -275,151 +265,3 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             menu(dic_last_names, liste_names_cleaned)
     else:
         exit()
-
- 
-=======
-def menu(dic_last_names,liste_names_cleaned):
-    maxi=8
-    user_input=input("What would you like to do:\n"
-          "     1) Display list of names\n"
-          "     2) Display the list of unimportant word\n"
-          "     3) Display the word with the highest TF-IDF score\n"
-          "     4) Display the most repeated words by Chirac\n"
-          "     5) Display the list of president who spoke of the Nation\n"
-          "     6) Display the first president who talked about climate or ecology\n"
-          "     7) Display wich non-unimportant words did all the presidents mentionned\n"
-          "     8) Exit\n"
-          "->")
-    try:
-        choice = int(user_input)
-    except ValueError:
-        print("Invalid input.")
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    if choice>maxi:
-        print("Invalid input.")
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    if choice==1:
-        display_Names(dic_last_names)
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==2:
-        print(calculate_unimportant_word(liste_names_cleaned))
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==3:
-        print("processing...")
-        a=tfidf_of_main_dico(main_dico(liste_names_cleaned),liste_names_cleaned)
-        max_score = max(a.values())
-        max_score_words = [word for word, score in a.items() if score == max_score]
-        print(f"Word(s) with the highest TF-IDF score(s): {max_score_words}")
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==4:
-        list_unimportant_word=calculate_unimportant_word(liste_names_cleaned)
-        print(list_unimportant_word)
-        print(most_repeated_words_Chirac(liste_names_cleaned,list_unimportant_word))
-        print("\n")
-    elif choice==5:
-        print("Here is the liste of the presidents who spoke about the nation and how many times they said it")
-        print(spoke_of_("nation",liste_names_cleaned))
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==6:
-        print("The first president to talk about climat is",who_spoke_first(spoke_of_("climat",liste_names_cleaned)),"\n")
-        print("The first president to talk about climat is",who_spoke_first(spoke_of_("écologie",liste_names_cleaned)),"\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==7:
-        print("If all the presidents mentionned a word then it's IDF score would be 0, which would make it a unimportant word.\n")
-        print("So there is no words that have been said by every presidents that isnt unimportant\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==8:
-        exit()
-
-    
-def menu2(list_names_cleaned):
-    maxi=2
-    user_input=input("What would you like to do :\n"
-                     "      1)Enter a question\n"
-                     "      2)Go back to main menu")
-    try:
-        choice = int(user_input)
-    except ValueError:
-        print("Invalid input.")
-        print("\n")
-        menu2(list_names_cleaned)
-    if choice>maxi:
-        print("Invalid input.")
-        print("\n")
-        menu2(list_names_cleaned)
-    elif choice==1:
-        #tbd
-        a=a
-    elif choice==2:
-        main_menu(list_names_cleaned,main_dico)
-
-def clean_question(string):
-    cleaned_string=""
-    for char in string:
-            if ord(char)<=90 and ord(char)>=65:
-                char=chr(ord(char)+32)
-                #change the text by removing capital letters
-            if (ord(char)<=47 and ord(char)>=33) or char==";" or char=="?":
-                char=chr(32)
-                #remove punctuation marks
-            cleaned_string+=char
-    return cleaned_string
-
-def remove_unimportant(cleaned_string,liste_unimportant_word):
-    liste_cleaned = cleaned_string.split()
-    result = [word for word in liste_cleaned if word not in liste_unimportant_word]
-
-    return result
-
-def calculate_tfidf_question(cleaned_liste,liste_names_cleaned):#calcule et return une liste contenant les valeurs tfidf de la question
-    tf={}
-    idf={}
-    tfidf_question=[]
-    for i in cleaned_liste:
-        tf[i]=cleaned_liste.count(i)/len(cleaned_liste)
-        idf[i]=calculate_idf(i,liste_names_cleaned)
-        tfidf_question[i]=tf[i]*idf[i]
-    return tfidf_question
-"""
-def calculate_tfidf_corpus(liste_names_cleaned,cleaned_liste,j):# calcule et return une liste avec les valeurs tfidf des mots de la question dans le corpus
-    tfidf_liste=[]
-    for i in cleaned_liste:
-        score=calculate_tf_single_file(i,j)*calculate_idf(i,liste_names_cleaned)
-        tfidf_liste.append(score)
-    return tfidf_liste
-
-def summ_tfidf(tfidf_liste,tfidf_question,liste_names_cleaned,cleaned_liste):#utilise les 2 fonctions précédentes pour calculer la somme des produits
-    summ_all_files=[]
-    for j in liste_names_cleaned:
-        tfidf_question=calculate_tfidf_question(cleaned_liste,liste_names_cleaned)
-        tfidf_liste=(calculate_tfidf_corpus(liste_names_cleaned,cleaned_liste,j))
-        summ=[x*y for x, y in zip(tfidf_question,tfidf_liste)]
-        summ_all_files.append(summ)
-    return summ_all_files
-
-
-
-def calculate_complicated_formula(tfidf_summ,cleaned_liste,tfidf_liste,tfidf_question,liste_names_cleaned):
-    for i in range(len(liste_names_cleaned)):
-        summ=summ_tfidf(tfidf_liste,tfidf_question,liste_names_cleaned,cleaned_liste)
-        final_result=summ[i]/
-
-
-def calculate_word_highest_tfidf(list_without_unimportant,liste_names_cleaned):
-    liste_tfidf=[]
-    for i in list_without_unimportant:
-        liste_tfidf_single_word=[]
-        for j in liste_names_cleaned:
-            liste_tfidf_single_word.append(calculate_tf_single_file(i,j)*calculate_idf(i,liste_names_cleaned))
-        liste_tfidf.append(max(liste_tfidf_single_word))
-    return liste_tfidf
-    
-    
-"""
->>>>>>> Stashed changes
