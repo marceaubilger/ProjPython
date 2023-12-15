@@ -19,4 +19,11 @@ copy_file(directory,liste_names_cleaned)
 
 clean_files(liste_names_cleaned)
 
-menu(dic_last_names,liste_names_cleaned)
+#menu(dic_last_names,liste_names_cleaned)
+a=clean_question("nation Je viens de déposer une version corrigée du projet en me basant sur les retours que m'ont fait vos enseignants de TP.")
+b=is_word_in_corpus(a,main_set(liste_names_cleaned))
+print(b)
+
+print(calculate_tfidf_question(b,liste_names_cleaned))
+print(len(calculate_tfidf_question(b,liste_names_cleaned)))
+

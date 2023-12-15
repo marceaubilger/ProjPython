@@ -102,8 +102,8 @@ def calculate_tf_single_file(word, document): #calculate the tf of one single fi
         txt=file.read()
     content=txt.split()
     word_count = content.count(word)
-    total_words = len(content)
-    return word_count / total_words if total_words > 0 else 0
+    #total_words = len(content)
+    return word_count #/ total_words if total_words > 0 else 0
 
 def calculate_tf_all_files(word,all_doc): #make sum of all single tf 
     tf_value=0
@@ -218,6 +218,17 @@ def get_matrix(liste_names_cleaned,main_set):
             l.append(tmp_idf*calculate_tf_single_file(i,j))
         matrix.append(l)
     return matrix
+
+def transpose_matrix(matrix):
+    rows, cols = len(matrix), len(matrix[0])
+    
+    transposed_matrix = [[0 for _ in range(rows)] for _ in range(cols)]
+
+    for i in range(rows):
+        for j in range(cols):
+            transposed_matrix[j][i] = matrix[i][j]
+
+    return transposed_matrix
     
 
 #menu 1 as match thanks to algorithmics
@@ -279,3 +290,32 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             menu(dic_last_names, liste_names_cleaned)
     else:
         exit()
+
+def clean_question(string):
+    cleaned_string=""
+    for char in string:
+            if ord(char)<=90 and ord(char)>=65:
+                char=chr(ord(char)+32)
+                #change the text by removing capital letters
+            if (ord(char)<=47 and ord(char)>=33) or char==";" or char=="?":
+                char=chr(32)
+                #remove punctuation marks
+            cleaned_string+=char
+    cleaned_liste=cleaned_string.split()
+    return cleaned_liste
+
+def is_word_in_corpus(cleaned_liste,main_set):
+    cleaned_liste_corpus = [word for word in cleaned_liste if word in main_set]
+    return cleaned_liste_corpus
+
+def calculate_tfidf_question(cleaned_liste,liste_names_cleaned):
+    dico_tfidf={}
+    for i in cleaned_liste:
+        if i in dico_tfidf.keys():
+           dico_tfidf[i]+=1
+        else:
+            dico_tfidf[i]=1
+    for i in dico_tfidf.keys():
+        dico_tfidf[i]=dico_tfidf[i]*calculate_idf(i,liste_names_cleaned)
+    return dico_tfidf
+
