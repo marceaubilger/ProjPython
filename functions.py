@@ -199,62 +199,59 @@ def who_spoke_first(dico_of_names):
             first=i
             break
     return first
+#menu 1 as match thanks to algorithmics
+def menu(dic_last_names, liste_names_cleaned):
+    user_input = input("What would you like to do:\n"
+                       "     1) Display list of names\n"
+                       "     2) Display the list of unimportant word\n"
+                       "     3) Display the word with the highest TF-IDF score\n"
+                       "     4) Display the most repeated words by Chirac\n"
+                       "     5) Display the list of president who spoke of the Nation\n"
+                       "     6) Display the first president who talked about climate or ecology\n"
+                       "     7) Display which non-unimportant words did all the presidents mention\n"
+                       "     8) Exit\n"
+                       "-> ")
 
-def menu(dic_last_names,liste_names_cleaned):
-    maxi=8
-    user_input=input("What would you like to do:\n"
-          "     1) Display list of names\n"
-          "     2) Display the list of unimportant word\n"
-          "     3) Display the word with the highest TF-IDF score\n"
-          "     4) Display the most repeated words by Chirac\n"
-          "     5) Display the list of president who spoke of the Nation\n"
-          "     6) Display the first president who talked about climate or ecology\n"
-          "     7) Display wich non-unimportant words did all the presidents mentionned\n"
-          "     8) Exit"
-          "->")
     try:
         choice = int(user_input)
     except ValueError:
-        print("Invalid input.")
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    if choice>maxi:
-        print("Invalid input.")
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    if choice==1:
-        display_Names(dic_last_names)
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==2:
-        print(calculate_unimportant_word(liste_names_cleaned))
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==3:
-        print("processing...")
-        a=tfidf_of_main_dico(main_dico(liste_names_cleaned),liste_names_cleaned)
-        max_score = max(a.values())
-        max_score_words = [word for word, score in a.items() if score == max_score]
-        print(f"Word(s) with the highest TF-IDF score(s): {max_score_words}")
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==4:
-        print(most_repeated_words_Chirac(liste_names_cleaned))
-        print("\n")
-    elif choice==5:
-        print("Here is the liste of the presidents who spoke about the nation and how many times they said it")
-        print(spoke_of_("nation",liste_names_cleaned))
-        print("\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==6:
-        print("The first president to talk about climat is",who_spoke_first(spoke_of_("climat",liste_names_cleaned)),"\n")
-        print("The first president to talk about climat is",who_spoke_first(spoke_of_("écologie",liste_names_cleaned)),"\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==7:
-        print("If all the presidents mentionned a word then it's IDF score would be 0, which would make it a unimportant word.")
-        print("So there is no words that have been said by every presidents that isnt unimportant\n")
-        menu(dic_last_names,liste_names_cleaned)
-    elif choice==8:
-        exit()
+        print("Invalid input.\n")
+        return menu(dic_last_names, liste_names_cleaned)
 
-    
+    match choice:
+        case 1:
+            display_Names(dic_last_names)
+            print("\n")
+        case 2:
+            print(calculate_unimportant_word(liste_names_cleaned))
+            print("\n")
+        case 3:
+            print("processing...")
+            a = tfidf_of_main_dico(main_dico(liste_names_cleaned), liste_names_cleaned)
+            max_score = max(a.values())
+            max_score_words = [word for word, score in a.items() if score == max_score]
+            print(f"Word(s) with the highest TF-IDF score(s): {max_score_words}")
+            print("\n")
+        case 4:
+            print(most_repeated_words_Chirac(liste_names_cleaned))
+            print("\n")
+        case 5:
+            print("Here is the list of the presidents who spoke about the nation and how many times they said it")
+            print(spoke_of_("nation", liste_names_cleaned))
+            print("\n")
+        case 6:
+            print("The first president to talk about climate is", who_spoke_first(spoke_of_("climate", liste_names_cleaned)))
+            print("The first president to talk about ecology is", who_spoke_first(spoke_of_("écologie", liste_names_cleaned)))
+            print("\n")
+        case 7:
+            print("If all the presidents mentioned a word then its IDF score would be 0, making it an unimportant word.")
+            print("So there are no words that have been said by every president that aren't unimportant\n")
+        case 8:
+            exit()
+        case _:
+            print("Invalid choice. Please select a number between 1 and 8.\n")
+
+    # Recall the menu unless the user chooses to exit (option 8)
+    if choice != 8:
+        menu(dic_last_names, liste_names_cleaned)
+ 
