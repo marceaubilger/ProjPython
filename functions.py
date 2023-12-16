@@ -365,7 +365,7 @@ def sum_square_vecteur(vecteur):# calcule la somme des elements au carré d'une 
         sum_of_squares += num ** 2
     return sum_of_squares
 
-def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):
+def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule compliqué avec les somme et les racine
     liste_val_formula=[]
     for i in range(0,8):
         a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
@@ -374,13 +374,14 @@ def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):
     return liste_val_formula
 
 def find_file(liste_val_formula,files_names,dico_tfidf,directory):
+    #prend le résultat de la formule, trouve la valeur maximale, prends le fichier correspondant a l'index de la valeur
     index=liste_val_formula.index(max(liste_val_formula))
     highest_word= max(dico_tfidf, key=dico_tfidf.get)
     full_file_path = os.path.join(directory, files_names[index])
     sentence=first_sentence_with_appearance(full_file_path,highest_word)
     return sentence
 
-def first_sentence_with_appearance(file_path, target_word):
+def first_sentence_with_appearance(file_path, target_word):#trouve la première apparition d'un mots dans un fichier et renvoie le phrase correspondante
     with open(file_path, 'r', encoding='utf-8') as file:
         text = file.read()
         sentences = text.split('.')

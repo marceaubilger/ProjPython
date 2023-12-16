@@ -21,11 +21,13 @@ clean_files(liste_names_cleaned)
 
 #menu(dic_last_names,liste_names_cleaned)
 
-cleaned_liste=clean_question(" Peux-tu me dire comment une nation peut-elle prendre soin du climat ?")
+
+#### TEST des fonctions 
+cleaned_liste=clean_question()
 #print(cleaned_liste)
 
 dico_tfidf=calculate_tfidf_question(cleaned_liste,liste_names_cleaned)
-#print(dico_tfidf)
+print(dico_tfidf)
 
 matrix=get_matrix(liste_names_cleaned,main_list(liste_names_cleaned))
 
