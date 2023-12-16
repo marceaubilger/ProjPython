@@ -20,10 +20,20 @@ copy_file(directory,liste_names_cleaned)
 clean_files(liste_names_cleaned)
 
 #menu(dic_last_names,liste_names_cleaned)
-a=clean_question("nation Je viens de déposer une version corrigée du projet en me basant sur les retours que m'ont fait vos enseignants de TP.")
-b=is_word_in_corpus(a,main_set(liste_names_cleaned))
-print(b)
 
-print(calculate_tfidf_question(b,liste_names_cleaned))
-print(len(calculate_tfidf_question(b,liste_names_cleaned)))
+cleaned_liste=clean_question(" Peux-tu me dire comment une nation peut-elle prendre soin du climat ?")
+#print(cleaned_liste)
 
+dico_tfidf=calculate_tfidf_question(cleaned_liste,liste_names_cleaned)
+#print(dico_tfidf)
+
+matrix=get_matrix(liste_names_cleaned,main_list(liste_names_cleaned))
+
+l_val_tfidf_in_files=calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix)
+#print(l_val_tfidf_in_files)
+#print(len(l_val_tfidf_in_files))
+
+l=complicatedd_formula(dico_tfidf,l_val_tfidf_in_files)
+print(l)
+
+print(find_file(l,files_names,dico_tfidf,directory))

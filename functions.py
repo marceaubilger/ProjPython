@@ -62,10 +62,10 @@ def copy_file(directory,list_names_cleaned):
     j=0
     for i in liste_sorted:
         file_path=os.path.join(directory,liste_sorted[j])
-        with open (file_path,"r") as file:
+        with open (file_path,"r",encoding="utf-8") as file:
             content=file.read()
             #copy text
-        with open (list_names_cleaned[j],"w") as out_file:
+        with open (list_names_cleaned[j],"w",encoding="utf-8") as out_file:
             out_file.write(content)
             #and past it
         j+=1
@@ -74,7 +74,7 @@ def copy_file(directory,list_names_cleaned):
 #function to replace capital letters and punctuation
 def clean_files(list_names_cleaned):
     for i in list_names_cleaned:
-        with open (i,"r") as file:
+        with open (i,"r",encoding="utf-8") as file:
             content=file.read()
             #copy text
         modified_content = ""
@@ -86,7 +86,7 @@ def clean_files(list_names_cleaned):
                 char=chr(32)
                 #remove punctuation marks
             modified_content+=char
-        with open (i,"w") as file:
+        with open (i,"w",encoding="utf-8") as file:
             file.write(modified_content)
             #replaces the original text with the new text without capital letters
 
@@ -138,20 +138,32 @@ def calculate_unimportant_word(all_doc):#Calculate unimportant words
         a=calculate_idf(i,all_doc)
         if a==0:
             list_unimportant.append(i)
+    
     return list_unimportant
 
-def main_set(all_doc): #Where we stock useful values 
+def remove_duplicates_ordered(word_list):# enlève les élements qui se répètent dans une liste
+    seen = set()
+    unique_words = []
+
+    for i in word_list:
+        if i not in seen:
+            seen.add(i)
+            unique_words.append(i)
+
+    return unique_words
+
+def main_list(all_doc): #Where we stock useful values 
     content=""
     for i in all_doc:
         with open(i,"r",encoding="utf-8") as file:
             txt=file.read()
         content+=txt
     word=content.split()
-    main_set=set(word)
+    main_list=remove_duplicates_ordered(word)
     #words=Counter(word)
 
     #main_dico = {word: count for word, count in words.items()}
-    return main_set
+    return main_list
 
 def tfidf_of_main_dico(main_dico,all_doc): #Use the main dico for compute a pertinent tf-idf
     main_dico_tfidf={}
@@ -208,10 +220,9 @@ def who_spoke_first(dico_of_names):#take in argument the above function, use its
             break
     return first
 
-def get_matrix(liste_names_cleaned,main_set):
+def get_matrix(liste_names_cleaned,main_list):
     matrix=[]
-    
-    for i in main_set:
+    for i in main_list:
         l=[]
         tmp_idf=calculate_idf(i,liste_names_cleaned)
         for j in liste_names_cleaned:
@@ -259,7 +270,7 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             print("\n")
         case 3:
             print("processing...")
-            a = tfidf_of_main_dico(main_set(liste_names_cleaned), liste_names_cleaned)
+            a = tfidf_of_main_dico(main_list(liste_names_cleaned), liste_names_cleaned)
             max_score = max(a.values())
             max_score_words = [word for word, score in a.items() if score == max_score]
             print(f"Word(s) with the highest TF-IDF score(s): {max_score_words}")
@@ -302,20 +313,80 @@ def clean_question(string):
                 #remove punctuation marks
             cleaned_string+=char
     cleaned_liste=cleaned_string.split()
+    cleaned_liste = [word for word in cleaned_liste if word not in ["comment", "pourquoi"]]
     return cleaned_liste
 
-def is_word_in_corpus(cleaned_liste,main_set):
-    cleaned_liste_corpus = [word for word in cleaned_liste if word in main_set]
+def is_word_in_corpus(cleaned_liste,main_list):# pas vraiment nécessaire
+    cleaned_liste_corpus = [word for word in cleaned_liste if word in main_list]
     return cleaned_liste_corpus
 
-def calculate_tfidf_question(cleaned_liste,liste_names_cleaned):
+def calculate_tfidf_question(cleaned_liste,liste_names_cleaned):#prend la question et calcule le score tfidf de chaque mots
     dico_tfidf={}
+    unimprtant=calculate_unimportant_word(liste_names_cleaned)
     for i in cleaned_liste:
         if i in dico_tfidf.keys():
            dico_tfidf[i]+=1
         else:
             dico_tfidf[i]=1
     for i in dico_tfidf.keys():
-        dico_tfidf[i]=dico_tfidf[i]*calculate_idf(i,liste_names_cleaned)
+        if i in unimprtant:
+            dico_tfidf[i]=0
+        else:
+            dico_tfidf[i]=dico_tfidf[i]*calculate_idf(i,liste_names_cleaned)
     return dico_tfidf
 
+
+def calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix):#prend la valeur de chaque mot de la question dans les fichiers grâce à la matrice
+    a=main_list(liste_names_cleaned)
+    l_val_tfidf_in_files=[]
+    for j in range(len(liste_names_cleaned)):
+        l_tmp=[]
+        for i in dico_tfidf.keys():
+            if i in a:
+                index_of_i=a.index(i)
+                val_of_i=matrix[index_of_i][j]
+
+            else:
+                val_of_i=0
+            l_tmp.append(val_of_i)
+        l_val_tfidf_in_files.append(l_tmp)
+    return l_val_tfidf_in_files #return une matrices avec 8 rows et autant de colones que de mots dans la question
+
+def scalar_product(dico_question,vecteur_files): #calcule le produit scalaire du dico_tfidf transformé en liste et du vecteur tiré de la matrice 
+    vecteur_question=list(dico_question.values())
+    summ=0
+    for i in range(len(vecteur_files)):
+        summ+=vecteur_question[i]*vecteur_files[i]
+    return summ
+
+def sum_square_vecteur(vecteur):# calcule la somme des elements au carré d'une liste
+    sum_of_squares = 0
+    for num in vecteur:
+        sum_of_squares += num ** 2
+    return sum_of_squares
+
+def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):
+    liste_val_formula=[]
+    for i in range(0,8):
+        a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
+        big_val=a/math.sqrt(sum_square_vecteur(dico_tfidf.values()))*math.sqrt(sum_square_vecteur(l_val_tfidf_in_files[i]))
+        liste_val_formula.append(big_val)
+    return liste_val_formula
+
+def find_file(liste_val_formula,files_names,dico_tfidf,directory):
+    index=liste_val_formula.index(max(liste_val_formula))
+    highest_word= max(dico_tfidf, key=dico_tfidf.get)
+    full_file_path = os.path.join(directory, files_names[index])
+    sentence=first_sentence_with_appearance(full_file_path,highest_word)
+    return sentence
+
+def first_sentence_with_appearance(file_path, target_word):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        text = file.read()
+        sentences = text.split('.')
+        for sentence in sentences:
+            words = sentence.split()
+            if target_word in words:
+                return sentence.strip()
+
+    return None 
