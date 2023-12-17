@@ -177,7 +177,7 @@ def highest_scores(main_dico_tfidf): #finding the word(s) which has the highest 
 
     return max_score_words
 
-def most_repeated_words_Chirac(doc,list_unimportant_word):
+def most_repeated_words_Chirac(doc):
     content=""
     for i in doc[:2]:
         with open(i,"r",encoding="utf-8") as file:
@@ -187,8 +187,6 @@ def most_repeated_words_Chirac(doc,list_unimportant_word):
     j=0
     for i in list_content:
         j+=1
-        if i in list_unimportant_word:
-            list_content.pop(j)
     word_counts = Counter(list_content)
     most_common_words = word_counts.most_common()
     max_count = most_common_words[0][1]
@@ -276,14 +274,14 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             print(f"Word(s) with the highest TF-IDF score(s): {max_score_words}")
             print("\n")
         case 4:
-            print(most_repeated_words_Chirac(liste_names_cleaned))
+            print("The most repeated word by Chirac is:",most_repeated_words_Chirac(liste_names_cleaned))
             print("\n")
         case 5:
             print("Here is the list of the presidents who spoke about the nation and how many times they said it")
             print(spoke_of_("nation", liste_names_cleaned))
             print("\n")
         case 6:
-            print("The first president to talk about climate is", who_spoke_first(spoke_of_("climate", liste_names_cleaned)))
+            print("The first president to talk about climate is", who_spoke_first(spoke_of_("climat", liste_names_cleaned)))
             print("The first president to talk about ecology is", who_spoke_first(spoke_of_("écologie", liste_names_cleaned)))
             print("\n")
         case 7:
@@ -296,9 +294,60 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
 
     # Recall the menu unless the user chooses to exit (option 8)
     if choice != 8:
-        user_decision=int(input("Do you want to make a new request ? 1: Yes 2: No "))
+        user_decision=input("Do you want to make a new request ? 1:Yes  2:Go back to main menu  3:Exit ")
         if user_decision==1:
             menu(dic_last_names, liste_names_cleaned)
+        elif user_decision==2:
+            main_menu(liste_names_cleaned,directory,dic_last_names)
+    else:
+        exit()
+def menu2(liste_names_cleaned,directory,dic_last_names):
+    user_input=input("What would you like to do: \n"
+                     "      1)Enter a question\n"
+                     "      2)Go back to main menu\n"
+                     "      3)Exit\n")
+    choice=0
+    try:
+        choice = int(user_input)
+    except ValueError:
+        print("Invalid input.\n")
+        menu2(liste_names_cleaned,directory,dic_last_names)
+    if choice==1:
+        question=input("Enter your question: \n")
+        vector_question=calculate_tfidf_question(clean_question(question),liste_names_cleaned)
+        non_zero=False
+        for i in vector_question.values():# check if the tfidf vector of the question is 0
+            if i!=0:
+                non_zero=True
+        if non_zero==True:
+            matrice_in_files=calculate_tfidf_question_in_files(vector_question,liste_names_cleaned,get_matrix(liste_names_cleaned,main_list(liste_names_cleaned)))
+            liste_val=complicatedd_formula(vector_question,matrice_in_files)
+            files_names = list_of_files(directory, "txt")
+            a,b=find_file(liste_val,files_names,vector_question,directory)
+            print("And the answer is :",a,"\nIt is found in the file : \n",b)
+        else:
+            print("This question can not be computed as all of the words are either not in the corpus or are unimportant words\n")
+
+    elif choice==2:
+        main_menu(liste_names_cleaned,directory,dic_last_names)
+    elif choice==3:
+        exit()
+    elif choice>3:
+        print("Invalid input.\n")
+        menu2(liste_names_cleaned,directory,dic_last_names)
+
+    if choice != 3:
+        second_choice=0
+        user_decision=int(input("Do you want to make a new request ? 1:Yes  2:Go back to main menu  3:Exit "))
+        try:
+            second_choice=int(user_decision)
+        except ValueError:
+            print("Invalid input")
+            menu2(liste_names_cleaned,directory,dic_last_names)
+        if user_decision==1:
+            menu2(liste_names_cleaned,directory,dic_last_names)
+        elif user_decision==2:
+            main_menu(liste_names_cleaned,directory,dic_last_names)
     else:
         exit()
 
@@ -366,10 +415,12 @@ def sum_square_vecteur(vecteur):# calcule la somme des elements au carré d'une 
     return sum_of_squares
 
 def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule compliqué avec les somme et les racine
+    print(dico_tfidf)
     liste_val_formula=[]
     for i in range(0,8):
         a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
-        big_val=a/math.sqrt(sum_square_vecteur(dico_tfidf.values()))*math.sqrt(sum_square_vecteur(l_val_tfidf_in_files[i]))
+        b=math.sqrt(sum_square_vecteur(dico_tfidf.values()))*math.sqrt(sum_square_vecteur(l_val_tfidf_in_files[i])) 
+        big_val=a/b
         liste_val_formula.append(big_val)
     return liste_val_formula
 
@@ -379,7 +430,7 @@ def find_file(liste_val_formula,files_names,dico_tfidf,directory):
     highest_word= max(dico_tfidf, key=dico_tfidf.get)
     full_file_path = os.path.join(directory, files_names[index])
     sentence=first_sentence_with_appearance(full_file_path,highest_word)
-    return sentence
+    return sentence,index
 
 def first_sentence_with_appearance(file_path, target_word):#trouve la première apparition d'un mots dans un fichier et renvoie le phrase correspondante
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -391,3 +442,24 @@ def first_sentence_with_appearance(file_path, target_word):#trouve la première 
                 return sentence.strip()
 
     return None 
+
+
+def main_menu(liste_names_cleaned,directory,dic_last_names):
+    user_input=input("Which functionnalities would you like to use: \n"
+                     "      1)Part 1\n"
+                     "      2)Part 2\n"
+                     "      3)Exit\n")
+    try:
+        choice = int(user_input)
+    except ValueError:
+        print("Invalid input.\n")
+        return main_menu(liste_names_cleaned,directory,dic_last_names)
+    if choice==1:
+        menu(dic_last_names,liste_names_cleaned)
+    elif choice==2:
+        menu2(liste_names_cleaned,directory,dic_last_names)
+    elif choice==3:
+        exit()
+    elif choice>3:
+        print("Invalid input.\n")
+        main_menu(liste_names_cleaned,directory,dic_last_names)
