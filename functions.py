@@ -250,7 +250,8 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
                        "     5) Display the list of president who spoke of the Nation\n"
                        "     6) Display the first president who talked about climate or ecology\n"
                        "     7) Display which non-unimportant words did all the presidents mention\n"
-                       "     8) Exit\n"
+                       "     8) Ask a question to our amazing chatbot"
+                       "     9) Exit\n"
                        "-> ")
 
     try:
@@ -288,9 +289,11 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             print("If all the presidents mentioned a word then its IDF score would be 0, making it an unimportant word.")
             print("So there are no words that have been said by every president that aren't unimportant\n")
         case 8:
+            #à programmer
+       # case 9:
             exit()
         case _:
-            print("Invalid choice. Please select a number between 1 and 8.\n")
+            print("Invalid choice. Please select a number between 1 and 9.\n")
 
     # Recall the menu unless the user chooses to exit (option 8)
     if choice != 8:
