@@ -19,9 +19,9 @@ copy_file(directory,liste_names_cleaned)
 
 clean_files(liste_names_cleaned)
 
-#menu(dic_last_names,liste_names_cleaned)
+menu(dic_last_names,liste_names_cleaned)
 
-
+'''
 #### TEST des fonctions 
 cleaned_liste=clean_question()
 #print(cleaned_liste)
@@ -38,4 +38,5 @@ l_val_tfidf_in_files=calculate_tfidf_question_in_files(dico_tfidf,liste_names_cl
 l=complicatedd_formula(dico_tfidf,l_val_tfidf_in_files)
 print(l)
 
-print(find_file(l,files_names,dico_tfidf,directory))
+print(find_file(l,files_names,dico_tfidf,directory))'''
+

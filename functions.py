@@ -252,7 +252,8 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
                        "     5) Display the list of president who spoke of the Nation\n"
                        "     6) Display the first president who talked about climate or ecology\n"
                        "     7) Display which non-unimportant words did all the presidents mention\n"
-                       "     8) Exit\n"
+                       "     8) Ask a question to our amazing chatbot"
+                       "     9) Exit\n"
                        "-> ")
 
     try:
@@ -276,7 +277,7 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             print(f"Word(s) with the highest TF-IDF score(s): {max_score_words}")
             print("\n")
         case 4:
-            print(most_repeated_words_Chirac(liste_names_cleaned))
+            print(most_repeated_words_Chirac(liste_names_cleaned))#Parameters don't seem right.'Nominations_Chirac1_cleaned.txt'
             print("\n")
         case 5:
             print("Here is the list of the presidents who spoke about the nation and how many times they said it")
@@ -290,12 +291,14 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             print("If all the presidents mentioned a word then its IDF score would be 0, making it an unimportant word.")
             print("So there are no words that have been said by every president that aren't unimportant\n")
         case 8:
+            #à programmer
+       # case 9:
             exit()
         case _:
-            print("Invalid choice. Please select a number between 1 and 8.\n")
+            print("Invalid choice. Please select a number between 1 and 9.\n")
 
     # Recall the menu unless the user chooses to exit (option 8)
-    if choice != 8:
+    if choice != 9:
         user_decision=int(input("Do you want to make a new request ? 1: Yes 2: No "))
         if user_decision==1:
             menu(dic_last_names, liste_names_cleaned)
