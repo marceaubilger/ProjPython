@@ -1,35 +1,18 @@
-#Python project : My first chatBot by Marceau Bilger and Paul Mahaut
-#Here is the heart of the project, where all functions are and work together to satisfy main.py requests
-
-
-# Import useful libraries for the rest of the programm
+#Import useful libraries for the rest of the programm
 import os 
 import math
 from collections import defaultdict #Idk
 from collections import Counter #Equivalent of incrementing a counter
 directory = "C:\ProjPython" #We use the absolute path so the programm can work on any computer 
 
-
-'''#Return list containing the names of all the files in the directory with the specified extension.
-    Parameters:
-    directory (str): The directory path to search in.
-    extension (str): The file extension to filter files by.
-    Returns:
-    list: A list of filenames (str) that match the given extension.'''
-def list_of_files(directory, extension): 
+def list_of_files(directory, extension): #Return list containing the names of all the files in the directory with the specified extension.
     files_names = [] 
     for filename in os.listdir(directory): 
         if filename.endswith(extension): 
             files_names.append(filename) 
     return files_names
-   
 
-'''#This function extracts and returns the last names of the presidents from the filenames (as a list).
-    Parameters:
-    files_names (list): A list of filenames (str) to extract last names from.
-    Returns:
-    list: A list of extracted last names (str).'''
-def get_LastNames(files_names):  
+def get_LastNames(files_names):  #This function extracts and returns the last names of the presidents from the filenames (as a list).
     names_files=open("names_files.txt","w+")
     for i in range(len(files_names)):
         names_files.write(files_names[i])
@@ -45,12 +28,8 @@ def get_LastNames(files_names):
         liste_lastNames.append(new_content)
     return liste_lastNames
 
-'''#add_FirstName at the list_lastNames and return it as a dictionnary with complete president name as values 
-    Parameters:
-    liste_lastNames (list): A list of last names (str) to add first names to.
-    Returns:
-    dict: A dictionary with complete names (str) as values.'''
-def add_FirstName(liste_lastNames): 
+
+def add_FirstName(liste_lastNames): #add_FirstName at the list_lastNames and return it as a dictionnary with complete president name as values 
     dic_last_names=list(dict.fromkeys(liste_lastNames))
     firstNames=open("firstNames.txt","w")
     for i in range (len(dic_last_names)):
@@ -162,7 +141,7 @@ def calculate_unimportant_word(all_doc):#Calculate unimportant words
     
     return list_unimportant
 
-def remove_duplicates_ordered(word_list):# remove repeating elements in a list
+def remove_duplicates_ordered(word_list):# enlève les élements qui se répètent dans une liste
     seen = set()
     unique_words = []
 
@@ -389,11 +368,11 @@ def clean_question(string):
     cleaned_liste = [word for word in cleaned_liste if word not in ["comment", "pourquoi"]]
     return cleaned_liste
 
-def is_word_in_corpus(cleaned_liste,main_list):# Not useful, we keep it in case.
+def is_word_in_corpus(cleaned_liste,main_list):# pas vraiment nécessaire
     cleaned_liste_corpus = [word for word in cleaned_liste if word in main_list]
     return cleaned_liste_corpus
 
-def calculate_tfidf_question(cleaned_liste,liste_names_cleaned):#takes the question and calculates the tfidf score of each word
+def calculate_tfidf_question(cleaned_liste,liste_names_cleaned):#prend la question et calcule le score tfidf de chaque mots
     dico_tfidf={}
     unimprtant=calculate_unimportant_word(liste_names_cleaned)
     for i in cleaned_liste:
@@ -409,7 +388,7 @@ def calculate_tfidf_question(cleaned_liste,liste_names_cleaned):#takes the quest
     return dico_tfidf
 
 
-def calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix):#takes the value of each word of the question in the files using the matrix
+def calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix):#prend la valeur de chaque mot de la question dans les fichiers grâce à la matrice
     a=main_list(liste_names_cleaned)
     l_val_tfidf_in_files=[]
     for j in range(len(liste_names_cleaned)):
@@ -423,22 +402,22 @@ def calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix):#ta
                 val_of_i=0
             l_tmp.append(val_of_i)
         l_val_tfidf_in_files.append(l_tmp)
-    return l_val_tfidf_in_files #return a matrix with 8 rows and as many columns as there are words in the question
+    return l_val_tfidf_in_files #return une matrices avec 8 rows et autant de colones que de mots dans la question
 
-def scalar_product(dico_question,vecteur_files): #calculate the scalar product of the dico tfidf transformed into a list and the vector taken from the matrix
+def scalar_product(dico_question,vecteur_files): #calcule le produit scalaire du dico_tfidf transformé en liste et du vecteur tiré de la matrice 
     vecteur_question=list(dico_question.values())
     summ=0
     for i in range(len(vecteur_files)):
         summ+=vecteur_question[i]*vecteur_files[i]
     return summ
 
-def sum_square_vecteur(vecteur):# calculates the sum of the squared elements of a list
+def sum_square_vecteur(vecteur):# calcule la somme des elements au carré d'une liste
     sum_of_squares = 0
     for num in vecteur:
         sum_of_squares += num ** 2
     return sum_of_squares
 
-def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calculate the formula with sums and roots
+def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule compliqué avec les somme et les racine
     liste_val_formula=[]
     for i in range(0,8):
         a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
@@ -448,14 +427,14 @@ def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calculate the formul
     return liste_val_formula
 
 def find_file(liste_val_formula,files_names,dico_tfidf,directory):
-    #takes the result of the formula, finds the maximum value, takes the file corresponding to the index of the value
+    #prend le résultat de la formule, trouve la valeur maximale, prends le fichier correspondant a l'index de la valeur
     index=liste_val_formula.index(max(liste_val_formula))
     highest_word= max(dico_tfidf, key=dico_tfidf.get)
     full_file_path = os.path.join(directory, files_names[index])
     sentence=first_sentence_with_appearance(full_file_path,highest_word)
     return sentence,index
 
-def first_sentence_with_appearance(file_path, target_word):#finds the first appearance of a word in a file and returns the corresponding phrase
+def first_sentence_with_appearance(file_path, target_word):#trouve la première apparition d'un mots dans un fichier et renvoie le phrase correspondante
     with open(file_path, 'r', encoding='utf-8') as file:
         text = file.read()
         sentences = text.split('.')
