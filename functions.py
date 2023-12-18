@@ -342,11 +342,15 @@ def menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files):
             if i!=0:
                 non_zero=True
         if non_zero==True:
-            liste_val=complicatedd_formula(vector_question,matrice_in_files)
+
+
+            l_val_tfidf_in_files=calculate_tfidf_question_in_files(vector_question,liste_names_cleaned,matrice_in_files)
+            liste_val=complicatedd_formula(vector_question,l_val_tfidf_in_files)
             files_names = list_of_files(directory, "txt")
             a,b=find_file(liste_val,files_names,vector_question,directory)
             print("\n")
             print("And the answer is :",a,"\nIt is found in the file : \n",b)
+            menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
         else:
             print("This question can not be computed as all of the words are either not in the corpus or are unimportant words\n")
             menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
@@ -410,6 +414,7 @@ def calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix):#pr
     return l_val_tfidf_in_files #return une matrices avec 8 rows et autant de colones que de mots dans la question
 
 def scalar_product(dico_question,vecteur_files): #calcule le produit scalaire du dico_tfidf transformé en liste et du vecteur tiré de la matrice 
+    print(dico_question,vecteur_files)
     vecteur_question=list(dico_question.values())
     summ=0
     for i in range(len(vecteur_files)):
@@ -422,7 +427,9 @@ def sum_square_vecteur(vecteur):# calcule la somme des elements au carré d'une 
         sum_of_squares += num ** 2
     return sum_of_squares
 
-def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule compliqué avec les somme et les racine
+def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule compliqué avec les sommes et les racines
+    print(len(l_val_tfidf_in_files))
+    print(len(l_val_tfidf_in_files[0]))
     liste_val_formula=[]
     for i in range(0,8):
         a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
