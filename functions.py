@@ -414,7 +414,6 @@ def calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix):#pr
     return l_val_tfidf_in_files #return une matrices avec 8 rows et autant de colones que de mots dans la question
 
 def scalar_product(dico_question,vecteur_files): #calcule le produit scalaire du dico_tfidf transformé en liste et du vecteur tiré de la matrice 
-    print(dico_question,vecteur_files)
     vecteur_question=list(dico_question.values())
     summ=0
     for i in range(len(vecteur_files)):
@@ -428,8 +427,6 @@ def sum_square_vecteur(vecteur):# calcule la somme des elements au carré d'une 
     return sum_of_squares
 
 def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule compliqué avec les sommes et les racines
-    print(len(l_val_tfidf_in_files))
-    print(len(l_val_tfidf_in_files[0]))
     liste_val_formula=[]
     for i in range(0,8):
         a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
