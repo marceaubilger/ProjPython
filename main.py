@@ -14,10 +14,10 @@ liste_lastNames=get_LastNames(files_names)
 
 dic_last_names=add_FirstName(liste_lastNames)
 
-
+matrice_in_files=get_matrix(liste_names_cleaned,main_list(liste_names_cleaned))
 copy_file(directory,liste_names_cleaned)
 
 clean_files(liste_names_cleaned)
 
 
-main_menu(liste_names_cleaned,directory,dic_last_names)
+main_menu(liste_names_cleaned,directory,dic_last_names,matrice_in_files)

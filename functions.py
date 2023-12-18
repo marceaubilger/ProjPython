@@ -5,14 +5,29 @@ from collections import defaultdict #Idk
 from collections import Counter #Equivalent of incrementing a counter
 directory = "C:\ProjPython" #We use the absolute path so the programm can work on any computer 
 
-def list_of_files(directory, extension): #Return list containing the names of all the files in the directory with the specified extension.
+def list_of_files(directory, extension):
+
+    '''Return list containing the names of all the files in the directory with the specified extension.
+    Parameters:
+    directory (str): The directory path to search in.
+    extension (str): The file extension to filter files by.
+    Returns:
+    list: A list of filenames (str) that match the given extension.'''
+
     files_names = [] 
     for filename in os.listdir(directory): 
         if filename.endswith(extension): 
             files_names.append(filename) 
     return files_names
 
-def get_LastNames(files_names):  #This function extracts and returns the last names of the presidents from the filenames (as a list).
+def get_LastNames(files_names): 
+
+    '''This function extracts and returns the last names of the presidents from the filenames (as a list).
+    Parameters:
+    files_names (list): A list of filenames (str) to extract last names from.
+    Returns:
+    list: A list of extracted last names (str).'''
+
     names_files=open("names_files.txt","w+")
     for i in range(len(files_names)):
         names_files.write(files_names[i])
@@ -29,7 +44,14 @@ def get_LastNames(files_names):  #This function extracts and returns the last na
     return liste_lastNames
 
 
-def add_FirstName(liste_lastNames): #add_FirstName at the list_lastNames and return it as a dictionnary with complete president name as values 
+def add_FirstName(liste_lastNames): 
+
+    '''#add_FirstName at the list_lastNames and return it as a dictionnary with complete president name as values 
+    Parameters:
+    liste_lastNames (list): A list of last names (str) to add first names to.
+    Returns:
+    dict: A dictionary with complete names (str) as values.'''
+    
     dic_last_names=list(dict.fromkeys(liste_lastNames))
     firstNames=open("firstNames.txt","w")
     for i in range (len(dic_last_names)):
@@ -241,7 +263,7 @@ def transpose_matrix(matrix):
     
 
 #menu 1 as match thanks to algorithmics
-def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previous functions according to user request 
+def menu(dic_last_names, liste_names_cleaned,matrice_in_files): #Menu which permits access previous functions according to user request 
     user_input = input("What would you like to do:\n"
                        "     1) Display list of names\n"
                        "     2) Display the list of unimportant word\n"
@@ -250,15 +272,14 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
                        "     5) Display the list of president who spoke of the Nation\n"
                        "     6) Display the first president who talked about climate or ecology\n"
                        "     7) Display which non-unimportant words did all the presidents mention\n"
-                       "     8) Ask a question to our amazing chatbot"
-                       "     9) Exit\n"
+                       "     8) Exit\n"
                        "-> ")
 
     try:
         choice = int(user_input)
     except ValueError:
         print("Invalid input.\n")
-        return menu(dic_last_names, liste_names_cleaned)
+        return menu(dic_last_names, liste_names_cleaned,matrice_in_files)
 
     match choice:
         case 1:
@@ -289,22 +310,20 @@ def menu(dic_last_names, liste_names_cleaned): #Menu which permits access previo
             print("If all the presidents mentioned a word then its IDF score would be 0, making it an unimportant word.")
             print("So there are no words that have been said by every president that aren't unimportant\n")
         case 8:
-            #à programmer
-       # case 9:
             exit()
         case _:
-            print("Invalid choice. Please select a number between 1 and 9.\n")
+            print("Invalid choice. Please select a number between 1 and 8.\n")
 
     # Recall the menu unless the user chooses to exit (option 8)
     if choice != 8:
-        user_decision=input("Do you want to make a new request ? 1:Yes  2:Go back to main menu  3:Exit ")
+        user_decision=int(input("Do you want to make a new request ? 1:Yes  2:Go back to main menu  3:Exit \n"))
         if user_decision==1:
-            menu(dic_last_names, liste_names_cleaned)
+            menu(dic_last_names, liste_names_cleaned,matrice_in_files)
         elif user_decision==2:
-            main_menu(liste_names_cleaned,directory,dic_last_names)
+            main_menu(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
     else:
         exit()
-def menu2(liste_names_cleaned,directory,dic_last_names):
+def menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files):
     user_input=input("What would you like to do: \n"
                      "      1)Enter a question\n"
                      "      2)Go back to main menu\n"
@@ -314,7 +333,7 @@ def menu2(liste_names_cleaned,directory,dic_last_names):
         choice = int(user_input)
     except ValueError:
         print("Invalid input.\n")
-        menu2(liste_names_cleaned,directory,dic_last_names)
+        menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
     if choice==1:
         question=input("Enter your question: \n")
         vector_question=calculate_tfidf_question(clean_question(question),liste_names_cleaned)
@@ -323,36 +342,22 @@ def menu2(liste_names_cleaned,directory,dic_last_names):
             if i!=0:
                 non_zero=True
         if non_zero==True:
-            matrice_in_files=calculate_tfidf_question_in_files(vector_question,liste_names_cleaned,get_matrix(liste_names_cleaned,main_list(liste_names_cleaned)))
             liste_val=complicatedd_formula(vector_question,matrice_in_files)
             files_names = list_of_files(directory, "txt")
             a,b=find_file(liste_val,files_names,vector_question,directory)
+            print("\n")
             print("And the answer is :",a,"\nIt is found in the file : \n",b)
         else:
             print("This question can not be computed as all of the words are either not in the corpus or are unimportant words\n")
-
+            menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
     elif choice==2:
-        main_menu(liste_names_cleaned,directory,dic_last_names)
+        main_menu(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
     elif choice==3:
         exit()
     elif choice>3:
         print("Invalid input.\n")
-        menu2(liste_names_cleaned,directory,dic_last_names)
+        menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
 
-    if choice != 3:
-        second_choice=0
-        user_decision=int(input("Do you want to make a new request ? 1:Yes  2:Go back to main menu  3:Exit "))
-        try:
-            second_choice=int(user_decision)
-        except ValueError:
-            print("Invalid input")
-            menu2(liste_names_cleaned,directory,dic_last_names)
-        if user_decision==1:
-            menu2(liste_names_cleaned,directory,dic_last_names)
-        elif user_decision==2:
-            main_menu(liste_names_cleaned,directory,dic_last_names)
-    else:
-        exit()
 
 def clean_question(string):
     cleaned_string=""
@@ -421,8 +426,10 @@ def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule c
     liste_val_formula=[]
     for i in range(0,8):
         a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
-        b=math.sqrt(sum_square_vecteur(dico_tfidf.values()))*math.sqrt(sum_square_vecteur(l_val_tfidf_in_files[i])) 
-        big_val=a/b
+        b=math.sqrt(sum_square_vecteur(dico_tfidf.values()))
+        c=math.sqrt(sum_square_vecteur(l_val_tfidf_in_files[i])) 
+        big_val=a/b*c
+
         liste_val_formula.append(big_val)
     return liste_val_formula
 
@@ -446,7 +453,7 @@ def first_sentence_with_appearance(file_path, target_word):#trouve la première 
     return None 
 
 
-def main_menu(liste_names_cleaned,directory,dic_last_names):
+def main_menu(liste_names_cleaned,directory,dic_last_names,matrice_in_files):
     user_input=input("Which functionnalities would you like to use: \n"
                      "      1)Part 1\n"
                      "      2)Part 2\n"
@@ -455,13 +462,13 @@ def main_menu(liste_names_cleaned,directory,dic_last_names):
         choice = int(user_input)
     except ValueError:
         print("Invalid input.\n")
-        return main_menu(liste_names_cleaned,directory,dic_last_names)
+        return main_menu(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
     if choice==1:
-        menu(dic_last_names,liste_names_cleaned)
+        menu(dic_last_names,liste_names_cleaned,matrice_in_files)
     elif choice==2:
-        menu2(liste_names_cleaned,directory,dic_last_names)
+        menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
     elif choice==3:
         exit()
     elif choice>3:
         print("Invalid input.\n")
-        main_menu(liste_names_cleaned,directory,dic_last_names)
+        main_menu(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
