@@ -7,5 +7,5 @@ analyze text files to obtain the TF-IDF score of the words present, offers sever
 Allows you to analyze the importance of words in texts based on their number of appearances in a text and in the corpus.
 Enter the number corresponding to the instruction you wish to perform.
 
-Issues : Questions 4 et 6 don't work
-For me : Do the link between part 1 and 2 (menu)
+Part 2:
+Allows the user to enter a sentence and get the part of the text which matches to most providing an accurate answer
