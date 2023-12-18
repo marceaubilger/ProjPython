@@ -19,24 +19,5 @@ copy_file(directory,liste_names_cleaned)
 
 clean_files(liste_names_cleaned)
 
-menu(dic_last_names,liste_names_cleaned)
 
-'''
-#### TEST des fonctions 
-cleaned_liste=clean_question()
-#print(cleaned_liste)
-
-dico_tfidf=calculate_tfidf_question(cleaned_liste,liste_names_cleaned)
-print(dico_tfidf)
-
-matrix=get_matrix(liste_names_cleaned,main_list(liste_names_cleaned))
-
-l_val_tfidf_in_files=calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix)
-#print(l_val_tfidf_in_files)
-#print(len(l_val_tfidf_in_files))
-
-l=complicatedd_formula(dico_tfidf,l_val_tfidf_in_files)
-print(l)
-
-print(find_file(l,files_names,dico_tfidf,directory))'''
-
+main_menu(liste_names_cleaned,directory,dic_last_names)
