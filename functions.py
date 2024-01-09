@@ -336,7 +336,7 @@ def menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files):
         menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
     if choice==1:
         question=input("Enter your question: \n")
-        vector_question=calculate_tfidf_question(clean_question(question),liste_names_cleaned)
+        vector_question=calculate_tfidf_question(clean_question(question,liste_names_cleaned),liste_names_cleaned)
         non_zero=False
         for i in vector_question.values():# check if the tfidf vector of the question is 0
             if i!=0:
@@ -363,7 +363,7 @@ def menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files):
         menu2(liste_names_cleaned,directory,dic_last_names,matrice_in_files)
 
 
-def clean_question(string):
+def clean_question(string,liste_names_cleaned):
     cleaned_string=""
     for char in string:
             if ord(char)<=90 and ord(char)>=65:
@@ -374,7 +374,8 @@ def clean_question(string):
                 #remove punctuation marks
             cleaned_string+=char
     cleaned_liste=cleaned_string.split()
-    cleaned_liste = [word for word in cleaned_liste if word not in ["comment", "pourquoi"]]
+    tmp_cleaned_liste = [word for word in cleaned_liste if word not in ["comment", "pourquoi", "quel","qui","quelle","parlé"]]
+    cleaned_liste=is_word_in_corpus(tmp_cleaned_liste,main_list(liste_names_cleaned))
     return cleaned_liste
 
 def is_word_in_corpus(cleaned_liste,main_list):# pas vraiment nécessaire
@@ -414,7 +415,6 @@ def calculate_tfidf_question_in_files(dico_tfidf,liste_names_cleaned,matrix):#pr
     return l_val_tfidf_in_files #return une matrices avec 8 rows et autant de colones que de mots dans la question
 
 def scalar_product(dico_question,vecteur_files): #calcule le produit scalaire du dico_tfidf transformé en liste et du vecteur tiré de la matrice 
-    print(dico_question,vecteur_files)
     vecteur_question=list(dico_question.values())
     summ=0
     for i in range(len(vecteur_files)):
@@ -428,8 +428,6 @@ def sum_square_vecteur(vecteur):# calcule la somme des elements au carré d'une 
     return sum_of_squares
 
 def complicatedd_formula(dico_tfidf,l_val_tfidf_in_files):# calcule la formule compliqué avec les sommes et les racines
-    print(len(l_val_tfidf_in_files))
-    print(len(l_val_tfidf_in_files[0]))
     liste_val_formula=[]
     for i in range(0,8):
         a=scalar_product(dico_tfidf,l_val_tfidf_in_files[i])
@@ -444,6 +442,10 @@ def find_file(liste_val_formula,files_names,dico_tfidf,directory):
     #prend le résultat de la formule, trouve la valeur maximale, prends le fichier correspondant a l'index de la valeur
     index=liste_val_formula.index(max(liste_val_formula))
     highest_word= max(dico_tfidf, key=dico_tfidf.get)
+
+    #print(dico_tfidf,"///////////////////////////////////",dico_tfidf.get)
+    print("highest word= ",highest_word)
+
     full_file_path = os.path.join(directory, files_names[index])
     sentence=first_sentence_with_appearance(full_file_path,highest_word)
     return sentence,index
